@@ -86,7 +86,7 @@ const ChatWindow = () => {
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
             {isConnected
-              ? "Ask about visas, green cards, asylum & more"
+              ? "Ask about student visas, work permits, OPT & more"
               : "Click below to connect with our AI assistant"}
           </p>
         </div>

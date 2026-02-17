@@ -1,31 +1,31 @@
 import { motion } from "framer-motion";
-import { Shield, FileText, Users, Clock, Globe, Scale } from "lucide-react";
+import { Shield, FileText, GraduationCap, Clock, Briefcase, Scale } from "lucide-react";
 
 const features = [
   {
+    icon: GraduationCap,
+    title: "Student Visas",
+    description: "Get guidance on F-1, J-1, and M-1 student visa applications and requirements.",
+  },
+  {
     icon: Shield,
-    title: "Visa Guidance",
-    description: "Get instant answers about H-1B, L-1, O-1, and other work visas.",
+    title: "OPT & CPT",
+    description: "Understand Optional and Curricular Practical Training eligibility and timelines.",
   },
   {
-    icon: FileText,
-    title: "Green Card Info",
-    description: "Learn about employment and family-based green card processes.",
-  },
-  {
-    icon: Users,
-    title: "Family Petitions",
-    description: "Understand sponsorship options for family reunification.",
+    icon: Briefcase,
+    title: "Work Visas",
+    description: "Learn about H-1B, L-1, O-1, and other employment-based visa categories.",
   },
   {
     icon: Clock,
     title: "Processing Times",
-    description: "Real-time updates on USCIS processing timelines.",
+    description: "Real-time updates on USCIS processing timelines for student and work cases.",
   },
   {
-    icon: Globe,
-    title: "Asylum & Refugee",
-    description: "Information on asylum applications and refugee status.",
+    icon: FileText,
+    title: "Status Changes",
+    description: "Navigate change of status from student to worker and visa transfers.",
   },
   {
     icon: Scale,

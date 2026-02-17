@@ -11,7 +11,7 @@ const Index = () => {
         <div className="flex items-center gap-2">
           <Globe className="h-7 w-7 text-primary" />
           <span className="font-serif text-xl font-bold text-foreground">
-            ImmigrAI
+            Lexbase
           </span>
         </div>
         <div className="flex items-center gap-6">
@@ -34,15 +34,15 @@ const Index = () => {
             transition={{ duration: 0.7 }}
           >
             <h1 className="font-serif text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl">
-              Navigate Your{" "}
-              <span className="text-gradient-gold">Immigration</span>{" "}
-              Journey with Confidence
+              Your{" "}
+              <span className="text-gradient-gold">Student & Work Visa</span>{" "}
+              Guide, Powered by AI
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Get instant, voice-powered guidance on visas, green cards, asylum,
-              and more. Our AI assistant is available 24/7 to answer your
-              immigration questions.
+              Get instant, voice-powered guidance on student visas, work permits,
+              H-1B, OPT, CPT, and more. Our AI assistant is available 24/7 to
+              answer your immigration questions.
             </p>
 
             <a
@@ -79,13 +79,12 @@ const Index = () => {
             transition={{ duration: 0.6 }}
           >
             <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
-              Why Choose <span className="text-gradient-gold">ImmigrAI</span>?
+              Why Choose <span className="text-gradient-gold">Lexbase</span>?
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
               Immigration can be overwhelming. Our AI assistant provides
-              reliable, up-to-date information so you can make informed
-              decisions. Available around the clock, in multiple languages, at no
-              cost.
+              reliable, up-to-date information on student and work visas so you
+              can make informed decisions. Available around the clock, at no cost.
             </p>
           </motion.div>
         </div>
@@ -97,11 +96,11 @@ const Index = () => {
           <div className="flex items-center gap-2">
             <Globe className="h-5 w-5 text-primary" />
             <span className="font-serif text-sm font-semibold text-foreground">
-              ImmigrAI
+              Lexbase
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            © 2026 ImmigrAI. Not a substitute for legal advice.
+            © 2026 Lexbase. Not a substitute for legal advice.
           </p>
         </div>
       </footer>
