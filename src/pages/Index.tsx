@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Globe, MessageCircle } from "lucide-react";
+import { Globe } from "lucide-react";
 import ChatWindow from "../components/ChatWindow";
 import Features from "../components/Features";
 
@@ -24,58 +24,42 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* Hero — two-column layout */}
       <section className="container mx-auto px-6 pb-20 pt-16 md:pt-24">
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+          {/* Left: headline */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
-              <MessageCircle className="h-4 w-4 text-primary" />
-              <span className="text-xs font-medium text-primary">
-                AI-Powered Immigration Support
-              </span>
-            </div>
-
-            <h1 className="font-serif text-4xl font-bold leading-tight text-foreground md:text-6xl">
+            <h1 className="font-serif text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl">
               Navigate Your{" "}
               <span className="text-gradient-gold">Immigration</span>{" "}
               Journey with Confidence
             </h1>
 
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Get instant, voice-powered guidance on visas, green cards, asylum,
               and more. Our AI assistant is available 24/7 to answer your
               immigration questions.
             </p>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
-          >
-            <button
-              onClick={() => {
-                const btn = document.querySelector<HTMLButtonElement>(
-                  ".fixed.bottom-6.right-6"
-                );
-                btn?.click();
-              }}
-              className="flex items-center gap-2 rounded-xl bg-primary px-8 py-3.5 font-sans text-sm font-semibold text-primary-foreground shadow-lg transition-all hover:bg-gold-dim hover:shadow-xl"
-            >
-              <MessageCircle className="h-4 w-4" />
-              Talk to Our Assistant
-            </button>
             <a
               href="#features"
-              className="rounded-xl border border-border px-8 py-3.5 font-sans text-sm font-medium text-foreground transition-all hover:border-primary/30 hover:bg-secondary"
+              className="mt-8 inline-block rounded-xl border border-border px-8 py-3.5 font-sans text-sm font-medium text-foreground transition-all hover:border-primary/30 hover:bg-secondary"
             >
               Learn More
             </a>
+          </motion.div>
+
+          {/* Right: conversation card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+          >
+            <ChatWindow />
           </motion.div>
         </div>
       </section>
@@ -121,9 +105,6 @@ const Index = () => {
           </p>
         </div>
       </footer>
-
-      {/* Chat Widget */}
-      <ChatWindow />
     </div>
   );
 };
