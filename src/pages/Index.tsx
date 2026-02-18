@@ -24,14 +24,24 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero — two-column layout */}
-      <section className="container mx-auto px-6 pb-20 pt-16 md:pt-24">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
-          {/* Left: headline */}
+      {/* Hero — centered, orb first */}
+      <section className="container mx-auto px-6 pb-20 pt-12 md:pt-20">
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+          {/* Orb */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7 }}
+          >
+            <ChatWindow />
+          </motion.div>
+
+          {/* Headline below orb */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="mt-12"
           >
             <h1 className="font-serif text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl">
               Your{" "}
@@ -39,7 +49,7 @@ const Index = () => {
               Guide, Powered by AI
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Get instant, voice-powered guidance on student visas, work permits,
               H-1B, OPT, CPT, and more. Our AI assistant is available 24/7 to
               answer your immigration questions.
@@ -51,15 +61,6 @@ const Index = () => {
             >
               Learn More
             </a>
-          </motion.div>
-
-          {/* Right: conversation card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          >
-            <ChatWindow />
           </motion.div>
         </div>
       </section>

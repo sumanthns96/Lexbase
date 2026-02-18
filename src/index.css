@@ -94,4 +94,17 @@
   .border-gold-subtle {
     border-color: hsl(43 90% 55% / 0.2);
   }
+
+  .orb-glow {
+    box-shadow: 0 0 60px 20px hsl(43 90% 55% / 0.15), 0 0 120px 40px hsl(43 90% 55% / 0.08);
+  }
+}
+
+@keyframes orb-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-orb-spin {
+  animation: orb-spin 4s linear infinite;
 }
