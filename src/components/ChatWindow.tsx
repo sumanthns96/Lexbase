@@ -1,7 +1,7 @@
 import { useConversation } from "@elevenlabs/react";
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Mic, MicOff, Globe } from "lucide-react";
+import { Mic, MicOff } from "lucide-react";
 
 const ChatWindow = () => {
   const [isConnecting, setIsConnecting] = useState(false);
@@ -33,86 +33,76 @@ const ChatWindow = () => {
   }, [conversation]);
 
   const isConnected = conversation.status === "connected";
+  const isSpeaking = conversation.isSpeaking;
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
-      {/* Header */}
-      <div className="flex items-center gap-3 border-b border-border bg-secondary px-5 py-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-          <Globe className="h-5 w-5 text-primary-foreground" />
+    <div className="flex flex-col items-center gap-8">
+      {/* Glowing Orb */}
+      <motion.div
+        className="relative w-56 h-56 md:w-72 md:h-72 rounded-full flex items-center justify-center animate-float"
+        animate={isSpeaking ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+        transition={isSpeaking ? { duration: 2, repeat: Infinity, ease: "easeInOut" } : {}}
+      >
+        {/* Spinning gradient ring */}
+        <div className="absolute inset-0 rounded-full overflow-hidden animate-orb-spin">
+          <div
+            className="w-full h-full"
+            style={{
+              background: `conic-gradient(
+                from 0deg,
+                hsl(215 100% 60%) 0%,
+                hsl(230 15% 6%) 20%,
+                hsl(215 80% 45%) 40%,
+                hsl(230 15% 6%) 60%,
+                hsl(215 100% 65%) 80%,
+                hsl(215 100% 60%) 100%
+              )`,
+            }}
+          />
         </div>
-        <div>
-          <h3 className="font-sans text-sm font-semibold text-foreground">
-            Immigration Support
-          </h3>
-          <p className="text-xs text-muted-foreground">
-            {isConnected ? "Connected — speak now" : "Voice-powered assistant"}
-          </p>
-        </div>
-      </div>
 
-      {/* Body */}
-      <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-12">
-        {/* Status orb */}
-        <motion.div
-          className={`flex h-28 w-28 items-center justify-center rounded-full border-2 ${
-            isConnected
-              ? conversation.isSpeaking
-                ? "border-primary bg-primary/10"
-                : "border-primary/50 bg-primary/5"
-              : "border-border bg-secondary"
-          }`}
-          animate={
-            isConnected && conversation.isSpeaking
-              ? { scale: [1, 1.08, 1], borderColor: ["hsl(43 90% 55%)", "hsl(35 90% 50%)", "hsl(43 90% 55%)"] }
-              : {}
-          }
-          transition={{ duration: 1.5, repeat: Infinity }}
+        {/* Inner glass circle */}
+        <div className="absolute inset-[6px] rounded-full bg-background/90 backdrop-blur-xl z-10" />
+
+        {/* Glow */}
+        <div className="absolute inset-0 rounded-full orb-glow" />
+
+        {/* Center pill button */}
+        <button
+          onClick={isConnected ? stopConversation : startConversation}
+          disabled={isConnecting}
+          className="relative z-20 flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-foreground/95 text-background font-medium text-sm tracking-tight transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 disabled:opacity-50"
         >
           {isConnected ? (
-            <Mic className="h-10 w-10 text-primary" />
+            <>
+              <MicOff className="w-4 h-4" />
+              <span>End Call</span>
+            </>
           ) : (
-            <MicOff className="h-10 w-10 text-muted-foreground" />
+            <>
+              <Mic className="w-4 h-4" />
+              <span>{isConnecting ? "Connecting..." : "Talk to Lexbase"}</span>
+            </>
           )}
+        </button>
+      </motion.div>
+
+      {/* Status */}
+      {isConnected && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-2"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+          </span>
+          <p className="text-sm text-muted-foreground tracking-tight">
+            {isSpeaking ? "Agent is speaking..." : "Listening..."}
+          </p>
         </motion.div>
-
-        <div className="text-center">
-          <p className="text-sm font-medium text-foreground">
-            {isConnected
-              ? conversation.isSpeaking
-                ? "Agent is speaking..."
-                : "Listening to you..."
-              : "Start a voice conversation"}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {isConnected
-              ? "Ask about student visas, work permits, OPT & more"
-              : "Click below to connect with our AI assistant"}
-          </p>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="border-t border-border p-4">
-        {!isConnected ? (
-          <button
-            onClick={startConversation}
-            disabled={isConnecting}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-sans text-sm font-semibold text-primary-foreground transition-all hover:bg-gold-dim disabled:opacity-50"
-          >
-            <Mic className="h-4 w-4" />
-            {isConnecting ? "Connecting..." : "Start Conversation"}
-          </button>
-        ) : (
-          <button
-            onClick={stopConversation}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 py-3 font-sans text-sm font-semibold text-destructive transition-all hover:bg-destructive/20"
-          >
-            <MicOff className="h-4 w-4" />
-            End Conversation
-          </button>
-        )}
-      </div>
+      )}
     </div>
   );
 };
