@@ -129,8 +129,7 @@ const Index = () => {
             </div>
 
             <div className="flex gap-8 text-sm text-muted-foreground/60">
-              <a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-foreground transition-colors">Terms of Service</a>
+              <a href="/Lexbase_Privacy_Policy_v2.docx" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Privacy Policy & Terms of Service</a>
             </div>
           </div>
 
