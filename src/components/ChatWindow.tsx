@@ -34,39 +34,57 @@ const ChatWindow = () => {
     return false;
   });
 
+  const addMessage = useCallback((role: "user" | "agent", text: string) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Math.random().toString(36).substring(7),
+        role,
+        text,
+        timestamp: Date.now(),
+      },
+    ]);
+  }, []);
+
+  const onMessage = useCallback((message: any) => {
+    console.log("Message:", message);
+
+    // New SDK structure emits { source: "ai" | "user", message: string }
+    if (message.source === "user" && message.message) {
+      addMessage("user", message.message);
+    } else if (message.source === "ai" && message.message) {
+      addMessage("agent", message.message);
+    }
+    // Handle User Transcription (Voice Input) - legacy/raw fallback
+    else if (message.type === "user_transcript" && message.user_transcription_event?.user_transcript) {
+      addMessage("user", message.user_transcription_event.user_transcript);
+    }
+    // Handle User Text Message - legacy/raw fallback
+    else if (message.type === "user_message" && message.text) {
+      addMessage("user", message.text);
+    }
+    // Handle Agent Response (Voice/Text Output) - legacy/raw fallback
+    else if (message.type === "agent_response" && message.agent_response_event?.agent_response) {
+      addMessage("agent", message.agent_response_event.agent_response);
+    }
+    // Handle fallback or text-only messages
+    else if (typeof message === "object" && message.text) {
+      addMessage("agent", message.text);
+    } else if (typeof message === "string" && message.trim().length > 0) {
+      addMessage("agent", message);
+    }
+  }, [addMessage]);
+
+  const onConnect = useCallback(() => console.log("Connected"), []);
+  const onDisconnect = useCallback(() => console.log("Disconnected"), []);
+  const onError = useCallback((error: any) => console.error("Error:", error), []);
+
   const conversation = useConversation({
     micMuted: isMicMuted, // Pass mute state to SDK
-    onConnect: () => console.log("Connected"),
-    onDisconnect: () => console.log("Disconnected"),
-    onMessage: (message: any) => {
-      console.log("Message:", message);
-
-      // New SDK structure emits { source: "ai" | "user", message: string }
-      if (message.source === "user" && message.message) {
-        addMessage("user", message.message);
-      } else if (message.source === "ai" && message.message) {
-        addMessage("agent", message.message);
-      }
-      // Handle User Transcription (Voice Input) - legacy/raw fallback
-      else if (message.type === "user_transcript" && message.user_transcription_event?.user_transcript) {
-        addMessage("user", message.user_transcription_event.user_transcript);
-      }
-      // Handle User Text Message - legacy/raw fallback
-      else if (message.type === "user_message" && message.text) {
-        addMessage("user", message.text);
-      }
-      // Handle Agent Response (Voice/Text Output) - legacy/raw fallback
-      else if (message.type === "agent_response" && message.agent_response_event?.agent_response) {
-        addMessage("agent", message.agent_response_event.agent_response);
-      }
-      // Handle fallback or text-only messages
-      else if (typeof message === "object" && message.text) {
-        addMessage("agent", message.text);
-      } else if (typeof message === "string" && message.trim().length > 0) {
-        addMessage("agent", message);
-      }
-    },
-    onError: (error) => console.error("Error:", error),
+    onConnect,
+    onDisconnect,
+    onMessage,
+    onError,
   });
 
   const isConnected = conversation.status === "connected";
@@ -77,18 +95,6 @@ const ChatWindow = () => {
     conversation.setVolume({ volume: isMuted ? 0 : 1 });
   }, [isMuted, conversation]);
 
-  const addMessage = (role: "user" | "agent", text: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Math.random().toString(36).substring(7),
-        role,
-        text,
-        timestamp: Date.now(),
-      },
-    ]);
-  };
-
   const startConversation = useCallback(async () => {
     if (!hasGivenConsent) {
       setPendingAction("voice");
@@ -98,7 +104,7 @@ const ChatWindow = () => {
 
     setIsConnecting(true);
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Removed manual getUserMedia to prevent locking the mic from ElevenLabs
       await conversation.startSession({
         agentId: "agent_4801kh02yzw9egnv2dfx4d957jzj",
         // @ts-ignore
@@ -109,7 +115,7 @@ const ChatWindow = () => {
     } finally {
       setIsConnecting(false);
     }
-  }, [conversation]);
+  }, [conversation, hasGivenConsent]);
 
   const stopConversation = useCallback(async () => {
     await conversation.endSession();
@@ -132,7 +138,7 @@ const ChatWindow = () => {
       // Inline start for text flow
       setIsConnecting(true);
       try {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Removed manual getUserMedia to prevent locking the mic from ElevenLabs
         await conversation.startSession({
           agentId: "agent_4801kh02yzw9egnv2dfx4d957jzj",
           // @ts-ignore
@@ -182,7 +188,6 @@ const ChatWindow = () => {
       // Start voice directly without checking consent again
       setIsConnecting(true);
       try {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
         await conversation.startSession({
           agentId: "agent_4801kh02yzw9egnv2dfx4d957jzj",
           // @ts-ignore
@@ -260,37 +265,51 @@ const ChatWindow = () => {
         )} />
 
         {/* Center pill button */}
-        <div className="relative z-20 flex items-center gap-4">
-          {isConnected && (
-            <Button
-              variant="secondary"
-              size="icon"
-              className={cn(
-                "rounded-full w-10 h-10 transition-all duration-300",
-                isMicMuted ? "bg-red-500/10 text-red-500 hover:bg-red-500/20" : "bg-card/50 hover:bg-card/80"
-              )}
-              onClick={() => setIsMicMuted(!isMicMuted)}
-            >
-              {isMicMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-            </Button>
-          )}
-          <button
-            onClick={isConnected ? stopConversation : startConversation}
-            disabled={isConnecting}
-            className="flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-foreground/95 text-background font-medium text-sm tracking-tight transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 disabled:opacity-50"
-          >
-            {isConnected ? (
-              <>
-                <MicOff className="w-4 h-4" /> {/* Maybe change this to PhoneOff or X? User used MicOff for End Call originally */}
-                <span>End Call</span>
-              </>
-            ) : (
-              <>
-                <Mic className="w-4 h-4" />
-                <span>{isConnecting ? "Connecting..." : "Talk to Lexbase"}</span>
-              </>
+        <div className="relative z-20 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-4">
+            {isConnected && (
+              <Button
+                variant="secondary"
+                size="icon"
+                className={cn(
+                  "rounded-full w-10 h-10 transition-all duration-300",
+                  isMicMuted ? "bg-red-500/10 text-red-500 hover:bg-red-500/20" : "bg-card/50 hover:bg-card/80"
+                )}
+                onClick={() => setIsMicMuted(!isMicMuted)}
+              >
+                {isMicMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              </Button>
             )}
-          </button>
+            <button
+              onClick={isConnected ? stopConversation : startConversation}
+              disabled={isConnecting}
+              className="flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-foreground/95 text-background font-medium text-sm tracking-tight transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95 disabled:opacity-50"
+            >
+              {isConnected ? (
+                <>
+                  <MicOff className="w-4 h-4" /> {/* Maybe change this to PhoneOff or X? User used MicOff for End Call originally */}
+                  <span>End Call</span>
+                </>
+              ) : (
+                <>
+                  <Mic className="w-4 h-4" />
+                  <span>{isConnecting ? "Connecting..." : "Talk to Lexbase"}</span>
+                </>
+              )}
+            </button>
+          </div>
+          <AnimatePresence>
+            {isConnected && (
+              <motion.span
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="text-xs font-medium text-muted-foreground/80 tracking-wide select-none"
+              >
+                Speak or type to interrupt
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
 
@@ -343,7 +362,12 @@ const ChatWindow = () => {
 
         {/* AI Input Area - Fixed relative to container */}
         <div className="w-full relative z-10">
-          <MorphPanel onSubmit={handleSendMessage} onOpen={handleChatOpen} />
+          <MorphPanel
+            onSubmit={handleSendMessage}
+            onOpen={handleChatOpen}
+            isOpen={hasStarted}
+            onActivity={() => conversation.sendUserActivity()}
+          />
         </div>
       </div>
     </div>
