@@ -50,9 +50,9 @@
     --gold-dim: 215 80% 45%;
     --navy-light: 230 12% 18%;
     --navy-mid: 230 15% 12%;
-    --glass: 230 15% 12% / 0.6;
-    --glass-border: 0 0% 100% / 0.08;
-    --glass-highlight: 0 0% 100% / 0.05;
+    --glass: 230 15% 12% / 0.4;
+    --glass-border: 0 0% 100% / 0.05;
+    --glass-highlight: 0 0% 100% / 0.03;
     --glow-primary: 0 0 80px hsl(215 100% 60% / 0.12);
     --gradient-hero: radial-gradient(ellipse 80% 60% at 50% -10%, hsl(215 100% 60% / 0.12) 0%, transparent 60%),
                      linear-gradient(180deg, hsl(230 15% 6%) 0%, hsl(230 15% 4%) 100%);
@@ -76,7 +76,7 @@
 
   h1, h2, h3, h4 {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Helvetica Neue', sans-serif;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
   }
 }
 

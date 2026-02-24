@@ -29,49 +29,60 @@ const features = [
   },
   {
     icon: Scale,
-    title: "Legal Resources",
+    title: "Legal Resources (Coming soon)",
     description: "Connect with verified immigration attorneys and legal aid.",
   },
 ];
 
 const Features = () => {
   return (
-    <section className="relative py-28">
-      <div className="container mx-auto px-6">
+    <section className="relative py-24 sm:py-32">
+      <div className="container mx-auto px-6 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-14 text-center"
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="mb-20 text-center"
         >
-          <h2 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
-            How We Can <span className="text-gradient-gold">Help</span>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-5xl">
+            Everything You Need to <br className="hidden sm:block" />
+            <span className="bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">Navigate Immigration</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-lg text-base text-muted-foreground">
-            Trained on the latest immigration policies to provide accurate, up-to-date guidance.
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground/80">
+            Lexbase is trained on the latest policies to provide accurate, up-to-date guidance when you need it most.
           </p>
+          <div className="mx-auto mt-6 inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md">
+            <p className="text-sm font-medium text-muted-foreground/70">
+              Note: Lexbase is for informational purposes only and does not constitute legal advice.
+            </p>
+          </div>
         </motion.div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="group glass rounded-2xl p-6 transition-all duration-300 hover:border-primary/20 hover:glow-primary"
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group relative overflow-hidden rounded-3xl border border-white/5 bg-white/[0.02] p-8 transition-all duration-500 hover:bg-white/[0.04] hover:border-white/10"
             >
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                <feature.icon className="h-5 w-5 text-primary" />
+              {/* Subtle hover gradient */}
+              <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+              <div className="relative z-10">
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 border border-white/5 shadow-inner transition-transform duration-500 group-hover:scale-110 group-hover:bg-primary/20 group-hover:border-primary/20">
+                  <feature.icon className="h-6 w-6 text-foreground/80 transition-colors duration-500 group-hover:text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold tracking-tight text-foreground mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-base leading-relaxed text-muted-foreground/70">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="text-base font-semibold tracking-tight text-foreground">
-                {feature.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {feature.description}
-              </p>
             </motion.div>
           ))}
         </div>
