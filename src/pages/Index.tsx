@@ -129,7 +129,7 @@ const Index = () => {
             </div>
 
             <div className="flex gap-8 text-sm text-muted-foreground/60">
-              <a href="/Lexbase_Privacy_Policy_v2.docx" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Privacy Policy & Terms of Service</a>
+              <a href="/Lexbase_Privacy_Policy_Terms.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Privacy Policy & Terms of Service</a>
             </div>
           </div>
 
