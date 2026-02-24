@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { MorphPanel } from "@/components/ui/ai-input";
+import { TermsDialog } from "@/components/ui/TermsDialog";
 
 type Message = {
   id: string;
@@ -21,6 +22,17 @@ const ChatWindow = () => {
   const [isMicMuted, setIsMicMuted] = useState(false); // New state for mic mute
   const [hasStarted, setHasStarted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Terms of Use state
+  const [showTerms, setShowTerms] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"voice" | { type: "text", text: string } | null>(null);
+  const [hasGivenConsent, setHasGivenConsent] = useState(() => {
+    // Only check sessionStorage on the client side
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("lexbase_consent") === "true";
+    }
+    return false;
+  });
 
   const conversation = useConversation({
     micMuted: isMicMuted, // Pass mute state to SDK
@@ -78,6 +90,12 @@ const ChatWindow = () => {
   };
 
   const startConversation = useCallback(async () => {
+    if (!hasGivenConsent) {
+      setPendingAction("voice");
+      setShowTerms(true);
+      return;
+    }
+
     setIsConnecting(true);
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -100,12 +118,31 @@ const ChatWindow = () => {
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
+    if (!hasGivenConsent) {
+      setPendingAction({ type: "text", text });
+      setShowTerms(true);
+      return;
+    }
+
     if (!hasStarted) setHasStarted(true);
 
     addMessage("user", text);
 
     if (!isConnected) {
-      await startConversation();
+      // Inline start for text flow
+      setIsConnecting(true);
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        await conversation.startSession({
+          agentId: "agent_4801kh02yzw9egnv2dfx4d957jzj",
+          // @ts-ignore
+          connectionType: "webrtc",
+        });
+      } catch (error) {
+        console.error("Failed to start conversation:", error);
+      } finally {
+        setIsConnecting(false);
+      }
     }
 
     try {
@@ -135,11 +172,47 @@ const ChatWindow = () => {
     }
   }, [messages]);
 
+  const handleAgreeTerms = async () => {
+    sessionStorage.setItem("lexbase_consent", "true");
+    setHasGivenConsent(true);
+    setShowTerms(false);
 
+    // Execute the action that was interrupted
+    if (pendingAction === "voice") {
+      // Start voice directly without checking consent again
+      setIsConnecting(true);
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        await conversation.startSession({
+          agentId: "agent_4801kh02yzw9egnv2dfx4d957jzj",
+          // @ts-ignore
+          connectionType: "webrtc",
+        });
+      } catch (error) {
+        console.error("Failed to start conversation:", error);
+      } finally {
+        setIsConnecting(false);
+      }
+    } else if (pendingAction?.type === "text") {
+      handleSendMessage(pendingAction.text);
+    }
+    setPendingAction(null);
+  };
+
+  const handleDeclineTerms = () => {
+    setShowTerms(false);
+    setPendingAction(null);
+  };
 
 
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-4xl mx-auto">
+      <TermsDialog
+        isOpen={showTerms}
+        onAgree={handleAgreeTerms}
+        onDecline={handleDeclineTerms}
+      />
+
       {/* Visualizer / Orb Section */}
       <motion.div
         className="relative w-56 h-56 md:w-64 md:h-64 rounded-full flex items-center justify-center"
