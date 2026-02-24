@@ -193,9 +193,11 @@ const useFormContext = () => React.useContext(FormContext)
 interface MorphPanelProps {
     onSubmit?: (message: string) => void;
     onOpen?: () => void;
+    onActivity?: () => void;
+    isOpen?: boolean;
 }
 
-export function MorphPanel({ onSubmit, onOpen }: MorphPanelProps) {
+export function MorphPanel({ onSubmit, onOpen, onActivity, isOpen }: MorphPanelProps) {
     const wrapperRef = React.useRef<HTMLDivElement>(null)
     const textareaRef = React.useRef<HTMLTextAreaElement | null>(null)
 
@@ -217,12 +219,25 @@ export function MorphPanel({ onSubmit, onOpen }: MorphPanelProps) {
 
     const triggerOpen = React.useCallback(() => {
         setIsInitialGlow(false)
-        if (onOpen) onOpen(); // added onOpen
+        if (onOpen) onOpen()
         setShowForm(true)
         setTimeout(() => {
             textareaRef.current?.focus()
         })
-    }, [onOpen]) // added onOpen to deps
+    }, [onOpen])
+
+    const [hasAutoOpened, setHasAutoOpened] = React.useState(false)
+
+    React.useEffect(() => {
+        // Only trigger the auto-open once when isOpen flips to true
+        if (isOpen && !hasAutoOpened) {
+            triggerOpen()
+            setHasAutoOpened(true)
+        } else if (!isOpen && hasAutoOpened) {
+            // Reset the latch if the external chat session completely ends
+            setHasAutoOpened(false)
+        }
+    }, [isOpen, hasAutoOpened, triggerOpen])
 
     const handleSuccess = React.useCallback((message: string) => {
         // triggerClose() // Removed to persist window
@@ -240,21 +255,9 @@ export function MorphPanel({ onSubmit, onOpen }: MorphPanelProps) {
             }
         }
 
-        let lastScrollY = window.scrollY;
-        function scrollHandler() {
-            const currentScrollY = window.scrollY;
-            if (currentScrollY < lastScrollY && showForm && Math.abs(currentScrollY - lastScrollY) > 10) {
-                // Scrolled up
-                triggerClose();
-            }
-            lastScrollY = currentScrollY;
-        }
-
         document.addEventListener("mousedown", clickOutsideHandler)
-        window.addEventListener("scroll", scrollHandler, { passive: true })
         return () => {
             document.removeEventListener("mousedown", clickOutsideHandler)
-            window.removeEventListener("scroll", scrollHandler)
         }
     }, [showForm, triggerClose])
 
@@ -292,7 +295,7 @@ export function MorphPanel({ onSubmit, onOpen }: MorphPanelProps) {
             >
                 <FormContext.Provider value={ctx}>
                     <DockBar />
-                    <InputForm ref={textareaRef} onSuccess={handleSuccess} />
+                    <InputForm ref={textareaRef} onSuccess={handleSuccess} onActivity={onActivity} />
                 </FormContext.Provider>
             </motion.div>
         </div>
@@ -351,7 +354,7 @@ function DockBar() {
 
 const FORM_HEIGHT = 100
 
-function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; onSuccess: (message: string) => void }) {
+function InputForm({ ref, onSuccess, onActivity }: { ref: React.Ref<HTMLTextAreaElement>; onSuccess: (message: string) => void; onActivity?: () => void }) {
     const { triggerClose, showForm } = useFormContext()
     const btnRef = React.useRef<HTMLButtonElement>(null)
 
@@ -413,6 +416,7 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
                             name="message"
                             className="h-full w-full resize-none scroll-py-2 rounded-md p-4 outline-none bg-transparent text-sm placeholder:text-muted-foreground"
                             required
+                            onChange={onActivity}
                             onKeyDown={handleKeys}
                             spellCheck={false}
                         />
