@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { Globe, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import ChatWindow from "../components/ChatWindow";
 import Features from "../components/Features";
+import LexbaseLogo from "../components/ui/LexbaseLogo";
 
 const Index = () => {
   return (
@@ -18,7 +19,7 @@ const Index = () => {
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-              <Globe className="h-4 w-4 text-primary" />
+              <LexbaseLogo className="h-5 w-5 text-primary" />
             </div>
             <span className="text-base font-semibold tracking-tight text-foreground">
               Lexbase
@@ -38,15 +39,15 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero — premium layout */}
-      <section className="relative z-10 container mx-auto px-6 pb-24 pt-36 md:pt-48">
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+      {/* Hero — purely interactive ChatWindow layout */}
+      <section className="relative z-10 w-full min-h-[85vh] flex flex-col items-center justify-start pt-36 md:pt-48 pb-20 px-6">
+        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
           {/* Announcement Badge */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-md transition-colors hover:bg-white/10"
+            className="mb-12 inline-flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-md transition-colors hover:bg-white/10"
           >
             <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-foreground/90">Lexbase Voice is now live</span>
@@ -56,31 +57,8 @@ const Index = () => {
             </a>
           </motion.div>
 
-          {/* Headline */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <h1 className="text-5xl font-bold leading-[1.1] tracking-tight text-foreground md:text-6xl lg:text-7xl">
-              Immigration Guidance, <br />
-              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/50 bg-clip-text text-transparent">Spoken Aloud.</span>
-            </h1>
-
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground/80">
-              Your 24/7 AI-powered immigration assistant. Navigate student visas, OPT, H-1B, and permanent residency with confidence.
-            </p>
-
-            <div className="mt-10 mb-16 flex items-center justify-center gap-4">
-              <a
-                href="#features"
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-8 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] transition-all hover:scale-105 hover:bg-primary/90 hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.5)]"
-              >
-                Explore Features
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </a>
-            </div>
-          </motion.div>
+          {/* Removed Headline and explored features from here, moved to About section */}
+          {/* Optional: Add spacing if needed, but flex layout should handle it */}
 
           {/* Orb / Demo Area */}
           <motion.div
@@ -98,7 +76,7 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <div id="features" className="relative z-10 w-full mb-20">
+      <div id="features" className="relative z-10 w-full">
         <div className="absolute inset-0 bg-background/80 backdrop-blur-3xl -z-10" />
         <Features />
       </div>
@@ -114,11 +92,25 @@ const Index = () => {
             className="mx-auto max-w-3xl"
           >
             <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-5xl mb-6">
-              Simplifying the <span className="bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">Immigration Maze</span>
+              Immigration Guidance, <br />
+              <span className="bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">Spoken Aloud.</span>
             </h2>
+            <p className="text-lg leading-relaxed text-muted-foreground/80 md:text-xl mb-6">
+              Your 24/7 AI-powered immigration assistant. Navigate student visas, OPT, H-1B, and permanent residency with confidence.
+            </p>
             <p className="text-lg leading-relaxed text-muted-foreground/80 md:text-xl">
               Immigration can be overwhelming. Lexbase provides an intelligent, always-on guide trained on the latest policies for student and work visas. Get reliable answers instantly so you can focus on building your future.
             </p>
+
+            <div className="mt-10 flex items-center justify-center gap-4">
+              <a
+                href="#features"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-8 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] transition-all hover:scale-105 hover:bg-primary/90 hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.5)]"
+              >
+                Explore Features
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </a>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -129,7 +121,7 @@ const Index = () => {
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-                <Globe className="h-4 w-4 text-primary" />
+                <LexbaseLogo className="h-5 w-5 text-primary" />
               </div>
               <span className="text-base font-semibold tracking-tight text-foreground">
                 Lexbase
@@ -151,8 +143,8 @@ const Index = () => {
             </p>
           </div>
         </div>
-      </footer>
-    </div>
+      </footer >
+    </div >
   );
 };
 
